@@ -8,4 +8,6 @@ COPY .env.dist /app/.env
 
 RUN pip install -r requirements.txt
 
-CMD ["python", "-u", "xavier.py"]
+ENV PYTHONUNBUFFERED=0
+
+CMD ["python", "xavier.py"]
