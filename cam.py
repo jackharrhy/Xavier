@@ -16,7 +16,7 @@ class Cam(commands.Cog):
 
     @cozy
     async def cam(self, ctx, location, lookup):
-        if location is None:
+        if location == "":
             location = random.choice(list(lookup.keys()))
 
         if not location in lookup:
@@ -28,14 +28,14 @@ class Cam(commands.Cog):
         await ctx.send(filename, file=File(saved_image, filename=filename))
 
     @commands.command()
-    async def ntvcam(self, ctx, location=None):
+    async def ntvcam(self, ctx, *location):
         """Sends img from an ntv.ca cam, random if no arg."""
-        await self.cam(ctx, location, self.ntvcams)
+        await self.cam(ctx, " ".join(location), self.ntvcams)
 
     @commands.command()
-    async def nlroadcam(self, ctx, location=None):
+    async def nlroadcam(self, ctx, *location):
         """Sends img from an roads.gov.nl.ca camera, random if no arg."""
-        await self.cam(ctx, location, self.nlroadcams)
+        await self.cam(ctx, " ".join(location), self.nlroadcams)
 
     @commands.command()
     async def ntvcams(self, ctx):
