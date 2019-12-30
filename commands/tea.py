@@ -2,7 +2,7 @@ import random
 import asyncio
 from discord.ext import commands
 
-from utils import cozy
+from utils import decorators
 
 
 class KettleState:
@@ -12,7 +12,7 @@ class KettleState:
         self.cups_left = 0
 
 
-class Kettle(commands.Cog):
+class Tea(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         bot.add_listener(self.on_message, "on_message")

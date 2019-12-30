@@ -1,7 +1,7 @@
 from discord.ext import commands
 from dotenv import load_dotenv
-from cam import Cam
-from kettle import Kettle
+from commands.cam import Cam
+from commands.tea import Tea
 import discord
 import os
 
@@ -20,5 +20,5 @@ async def on_ready():
 
 if __name__ == "__main__":
     bot.add_cog(Cam(bot))
-    bot.add_cog(Kettle(bot))
+    bot.add_cog(Tea(bot))
     bot.run(XAVIER_TOKEN)
