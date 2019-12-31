@@ -18,6 +18,11 @@ async def on_ready():
     print(f"Logged in as {bot.user}")
 
 
+@bot.check
+async def globally_block_dms(ctx):
+    return ctx.guild is not None
+
+
 if __name__ == "__main__":
     bot.add_cog(Cam(bot))
     bot.add_cog(Tea(bot))
