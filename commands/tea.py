@@ -5,15 +5,14 @@ from discord.ext import commands
 from utils import decorators
 
 
-class MugState:
-    def __init__(self):
-        self.exists = False
-        self.cold = True
-        self.sips_left = 0
-
-
 class Mug:
     time_to_fill = 1
+
+    class State:
+        def __init__(self):
+            self.exists = False
+            self.cold = True
+            self.sips_left = 0
 
     def __init__(self):
         self.methods = {
@@ -22,7 +21,7 @@ class Mug:
             "fill up mug": self.fill_up_mug,
             "spill the mug": self.spill_the_mug,
         }
-        self.state = MugState()
+        self.state = Mug.State()
 
     async def smash_mug(self, message):
         if self.state.exists:
@@ -55,23 +54,22 @@ class Mug:
         pass
 
 
-class KettleState:
-    def __init__(self):
-        self.exists = False
-        self.ready = False
-        self.cups_left = 0
-
-
 class Kettle:
     time_to_boil = 1
     cups_to_make = 4
+
+    class State:
+        def __init__(self):
+            self.exists = False
+            self.ready = False
+            self.cups_left = 0
 
     def __init__(self):
         self.methods = {
             "put on kettle": self.put_on_kettle,
             "spill the kettle": self.spill_the_kettle,
         }
-        self.state = KettleState()
+        self.state = Kettle.State()
 
     async def spill_the_kettle(self, message):
         self.state.exists = False
@@ -123,7 +121,7 @@ class Tea(commands.Cog):
             await kettle.methods[message.content](message)
 
         if not message.author.id in Tea.mugs:
-            Tea.kettles[message.author.id] = Mug()
+            Tea.mugs[message.author.id] = Mug()
 
         mug = Tea.mugs[message.author.id]
 
