@@ -105,25 +105,46 @@ class Tea(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+        self.kettle_methods = list(Kettle().methods)
+        self.mug_methods = list(Mug().methods)
+
         bot.add_listener(self.on_message, "on_message")
 
-    async def on_message(self, message):
-        # TODO wrap in cozy decorator
-        if message.author == self.bot.user:
-            return
+    @commands.command()
+    async def tea(self, ctx):
+        """Returns a list of avalible tea-related commands"""
+        list_of_methods = "\n".join(self.kettle_methods + self.mug_methods)
+        await ctx.send(f"Available tea-related commands: ```{list_of_methods}```")
 
+    async def handle_kettle(self, message):
         if not message.guild.id in Tea.kettles:
             Tea.kettles[message.guild.id] = Kettle()
 
         kettle = Tea.kettles[message.guild.id]
 
-        if message.content in kettle.methods:
-            await kettle.methods[message.content](message)
+        await kettle.methods[message.content](message)
 
-        if not message.author.id in Tea.mugs:
-            Tea.mugs[message.author.id] = Mug()
+    async def handle_mug(self, message):
+        if not message.guild.id in Tea.mugs:
+            Tea.mugs[message.guild.id] = {}
 
-        mug = Tea.mugs[message.author.id]
+        tray = Tea.mugs[message.guild.id]
 
-        if message.content in mug.methods:
-            await mug.methods[message.content](message)
+        if not message.author.id in tray:
+            tray[message.author.id] = Mug()
+
+        mug = tray[message.author.id]
+
+        await mug.methods[message.content](message)
+
+    # TODO wrap in cozy decorator
+    async def on_message(self, message):
+        if message.author == self.bot.user:
+            return
+
+        if message.content in self.kettle_methods:
+            await self.handle_kettle(message)
+
+        if message.content in self.mug_methods:
+            await self.handle_mug(message)
