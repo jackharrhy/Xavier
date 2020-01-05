@@ -6,6 +6,7 @@ a discord bot that does things
 
 Python 3.8.1
 Pip 19.2.3
+ImageMagick 7.0.9-13
 
 ## Install
 
