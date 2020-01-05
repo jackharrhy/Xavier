@@ -14,7 +14,8 @@ class Mug:
             self.cold = True
             self.sips_left = 0
 
-    def __init__(self):
+    def __init__(self, guild_id=None):
+        self.guild_id = guild_id
         self.methods = {
             "grab a mug": self.grab_a_mug,
             "smash mug": self.smash_mug,
@@ -48,20 +49,55 @@ class Mug:
             )
 
     async def fill_up_mug(self, message):
-        pass
+        if not self.guild_id in Tea.kettles:
+            await message.channel.send(
+                "There exists NO kettle here to even fill your mug with!!!"
+            )
+            return
+        elif not self.state.exists:
+            await message.channel.send(
+                "YOU do not have mug you cannot SPILL tea into the air are you mad?"
+            )
+            return
+
+        guild_kettle = Tea.kettles[self.guild_id]
+
+        if guild_kettle.state.ready:
+            if guild_kettle.state.cups_left <= 0:
+                await message.channel.send("no more cups of TEA left in the kettle!!!")
+                return
+
+            guild_kettle.state.cups_left -= 1
+            self.cold = guild_kettle.state.cold
+            self.sips_left = 8
+
+            if not self.cold:
+                await message.channel.send(
+                    f"Ah there yes nice mug FILLED, you have a _toasty_ {self.sips_left} sips of TEA left :) :) :)"
+                )
+            else:
+                await message.channel.send(
+                    f"The KETTLE was COLD when you poured this tea now you have a _chilly_ {self.sips_left} sips left.-."
+                )
+
+        else:
+            pass
 
     async def spill_the_mug(self, message):
+        await message.channel.send("stub")
         pass
 
 
 class Kettle:
     time_to_boil = 1
+    time_to_cold = 10
     cups_to_make = 4
 
     class State:
         def __init__(self):
             self.exists = False
             self.ready = False
+            self.cold = True
             self.cups_left = 0
 
     def __init__(self):
@@ -74,6 +110,7 @@ class Kettle:
     async def spill_the_kettle(self, message):
         self.state.exists = False
         self.state.ready = False
+        self.state.cold = True
         self.state.cups_left = 0
         await message.channel.send(
             f"kettle has been spilt on the floor, no more cup and no longer exist"
@@ -88,11 +125,21 @@ class Kettle:
             await asyncio.sleep(Kettle.time_to_boil)
 
             self.state.ready = True
+            self.state.cold = False
             self.state.cups_left = Kettle.cups_to_make
 
             await message.channel.send(
                 f"kettle ready, {self.state.cups_left} cups ready to be poured!"
             )
+
+            await asyncio.sleep(Kettle.time_to_cold)
+
+            self.state.cold = True
+
+            if self.state.cups_left > 0:
+                await message.channel.send(
+                    f"kettle has been LEFT for too long, {self.state.cups_left} COLD cups still awaiting to be poured tho"
+                )
         else:
             await message.channel.send(
                 "kettle is already exist, cannot make more than one kettle only one kettle .-."
@@ -132,7 +179,7 @@ class Tea(commands.Cog):
         tray = Tea.mugs[message.guild.id]
 
         if not message.author.id in tray:
-            tray[message.author.id] = Mug()
+            tray[message.author.id] = Mug(message.guild.id)
 
         mug = tray[message.author.id]
 
