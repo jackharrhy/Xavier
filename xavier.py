@@ -25,5 +25,5 @@ async def globally_block_dms(ctx):
 
 if __name__ == "__main__":
     bot.add_cog(Cam(bot))
-    bot.add_cog(Tea(bot))
+    # bot.add_cog(Tea(bot))
     bot.run(XAVIER_TOKEN)
