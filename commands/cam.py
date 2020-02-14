@@ -3,18 +3,18 @@ from datetime import datetime
 from discord.ext import commands
 from discord import File
 
-from utils import get_image, save_image
-from soup import NLRoadCams, NTVCams
-from utils import cozy
+from utils import images
+from utils import decorators
+from utils import soups
 
 
 class Cam(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.nlroadcams = NLRoadCams()
-        self.ntvcams = NTVCams()
+        self.nlroadcams = soups.NLRoadCams()
+        self.ntvcams = soups.NTVCams()
 
-    @cozy
+    @decorators.cozy
     async def cam(self, ctx, location, lookup):
         if location == "":
             location = random.choice(list(lookup.keys()))
@@ -22,8 +22,8 @@ class Cam(commands.Cog):
         if not location in lookup:
             return await ctx.send(f"Invalid location: {location}")
 
-        image = get_image(lookup[location])
-        saved_image = save_image(image)
+        image = images.get_image(lookup[location])
+        saved_image = images.save_image(image)
         filename = f"{location} - {datetime.now()}.jpg"
         await ctx.send(filename, file=File(saved_image, filename=filename))
 
