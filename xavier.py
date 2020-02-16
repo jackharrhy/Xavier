@@ -2,6 +2,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from commands.cam import Cam
 from commands.tea import Tea
+from commands.nit import Nit
 import discord
 import os
 
@@ -25,5 +26,6 @@ async def globally_block_dms(ctx):
 
 if __name__ == "__main__":
     bot.add_cog(Cam(bot))
+    bot.add_cog(Nit(bot))
     # bot.add_cog(Tea(bot))
     bot.run(XAVIER_TOKEN)

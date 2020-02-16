@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  xavier:
+    image: xavier
+    environment:
+      - XAVIER_TOKEN=
+      - XAVIER_PREFIX=x!

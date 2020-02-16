@@ -1,5 +1,7 @@
-.env
-venv/
 *.swp
+.vscode
+venv/
 __pycache__/
-.git/
+.env
+persist
+docker-compose.yml
