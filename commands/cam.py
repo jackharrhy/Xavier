@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from discord.ext import commands
+from discord.ext import tasks, commands
 from discord import File
 
 from utils import images
@@ -13,6 +13,11 @@ class Cam(commands.Cog):
         self.bot = bot
         self.nlroadcams = soups.NLRoadCams()
         self.ntvcams = soups.NTVCams()
+
+    @tasks.loop(hours=1)
+    async def printer(self):
+        self.nlroadcams.refresh()
+        self.ntvcams.refresh()
 
     @decorators.cozy
     async def cam(self, ctx, location, lookup):
