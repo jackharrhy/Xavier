@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from discord.ext import commands
+from discord.ext import tasks, commands
 from discord import File
 
 from utils import images
@@ -14,6 +14,11 @@ class Cam(commands.Cog):
         self.nlroadcams = soups.NLRoadCams()
         self.ntvcams = soups.NTVCams()
 
+    @tasks.loop(hours=1)
+    async def printer(self):
+        self.nlroadcams.refresh()
+        self.ntvcams.refresh()
+
     @decorators.cozy
     async def cam(self, ctx, location, lookup):
         if location == "":
@@ -22,7 +27,8 @@ class Cam(commands.Cog):
         if not location in lookup:
             return await ctx.send(f"Invalid location: {location}")
 
-        image = images.get_image(lookup[location])
+        image_url = lookup[location]
+        image = images.get_image(image_url)
         saved_image = images.save_image(image)
         filename = f"{location} - {datetime.now()}.jpg"
         await ctx.send(filename, file=File(saved_image, filename=filename))

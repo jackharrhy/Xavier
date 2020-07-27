@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  xavier:
+    image: xavier
+    env_file:
+     - ./.env
