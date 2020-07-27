@@ -27,7 +27,8 @@ class Cam(commands.Cog):
         if not location in lookup:
             return await ctx.send(f"Invalid location: {location}")
 
-        image = images.get_image(lookup[location])
+        image_url = lookup[location]
+        image = images.get_image(image_url)
         saved_image = images.save_image(image)
         filename = f"{location} - {datetime.now()}.jpg"
         await ctx.send(filename, file=File(saved_image, filename=filename))

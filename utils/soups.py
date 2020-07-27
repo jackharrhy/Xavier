@@ -21,7 +21,7 @@ class DynaDict(dict):
         self.update(self.grab())
 
     def __init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.refresh()
 
 class NTVCams(DynaDict):
@@ -46,20 +46,27 @@ class NTVCams(DynaDict):
         return fresh_data
 
 class NLRoadCams(DynaDict):
-    govnl_roads_url = "https://www.roads.gov.nl.ca/cameras/"
+    govnl_roads_url = "https://www.gov.nl.ca/tw/roads/cameras/"
 
     def grab(self):
         fresh_data = {}
-        for tag in make_soup(NLRoadCams.govnl_roads_url).find_all(
-            "a", href=True, target=False
-        ):
-            parsed_url = urlparse(tag["href"])
+        resp = make_soup(NLRoadCams.govnl_roads_url)
+
+        article = resp.find("article")
+        uls = article.find_all("ul")
+        ul = uls[3]
+        for li in ul.find_all("li"):
+            a = li.find("a")
+            parsed_url = urlparse(a["href"])
             url_parts = parsed_url.path.split("/")
-            if dict(enumerate(url_parts)).get(1) == "cameras":
-                road_page_url = f"{NLRoadCams.govnl_roads_url}{url_parts[2]}"
-                img = make_soup(road_page_url).find_all("img", border=1)[0]
-                fresh_data[tag.text] = img["src"]
+            location = url_parts[4]
+
+            cam_page_url = f"https://www.gov.nl.ca/tw/roads/cameras/{location}/"
+            img = make_soup(cam_page_url).find("img", border=1)
+            fresh_data[li.text] = img["src"]
+
         return fresh_data
+
 
 if __name__ == "__main__":
     nlroadcams = NLRoadCams()
