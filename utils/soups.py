@@ -1,7 +1,6 @@
-import shelve
 from urllib.parse import urlparse
 
-import requests
+import httpx
 from bs4 import BeautifulSoup
 
 fake_user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
@@ -9,7 +8,7 @@ headers = {"User-Agent": fake_user_agent}
 
 
 def make_soup(url):
-    response = requests.get(url, headers=headers)
+    response = httpx.get(url, headers=headers)
     return BeautifulSoup(response.text, "html.parser")
 
 

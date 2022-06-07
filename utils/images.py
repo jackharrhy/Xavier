@@ -1,4 +1,4 @@
-import requests
+import httpx
 import io
 from wand.image import Image
 
@@ -8,7 +8,7 @@ from utils import soups
 def get_image(url):
     """Retrieve an image object from a URL"""
     print(f"requesting url: {url}")
-    resp = requests.get(url, headers=soups.headers)
+    resp = httpx.get(url, headers=soups.headers)
     return Image(file=io.BytesIO(resp.content))
 
 
