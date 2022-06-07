@@ -2,7 +2,7 @@ from functools import wraps
 
 
 def cozy(f):
-    """Wraps a discord command in a typing context, and spits out errors on them occuring"""
+    """Wraps a discord command in a typing context, and spits out errors on them occurring"""
 
     @wraps(f)
     async def inner(self, ctx, *args, **kwargs):
